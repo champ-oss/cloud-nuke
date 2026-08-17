@@ -1,0 +1,61 @@
+name: cloud-nuke-dryrun
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 0' # Runs every Sunday at midnight UTC
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  dryrun:
+    runs-on: ubuntu-latest
+
+    env:
+      AWS_DEFAULT_REGION: us-east-2
+      DISABLE_TELEMETRY: "1"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: us-east-2
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Install cloud-nuke
+        run: |
+          curl -L -o cloud-nuke \
+            https://github.com/gruntwork-io/cloud-nuke/releases/download/v0.51.0/cloud-nuke_linux_amd64
+          chmod +x cloud-nuke
+          sudo mv cloud-nuke /usr/local/bin/cloud-nuke
+          cloud-nuke --version
+
+      - name: Cloud Nuke
+        run: |
+          cloud-nuke aws \
+            --config cloud-nuke-config.yml \
+            --region us-east-2 \
+            --exclude-resource-type iam-group,iam-instance-profile,iam-policy,iam-role,iam-service-linked-role,iam-user,eip,elbv2,guard-duty,cloudtrail,security-hub,access-analyzer,event-bridge,event-bridge-rule,config-recorders,config-rules,macie-member,ssm-parameter,nat-gateway,ec2-dhcp-option,network-acl,oidc-provider,ipam,ipam-byoasn,ipam-custom-allocation,ipam-pool,ipam-resource-discovery,ipam-scope,route53-hosted-zone
+
+      - name: Show Report Summary
+        if: always()
+        run: |
+          echo "===== CLOUD NUKE REPORT ====="
+
+          if [ -f cloud-nuke-dryrun.json ]; then
+            jq . cloud-nuke-dryrun.json
+          else
+            echo "cloud-nuke-dryrun.json not found"
+          fi
+
+      - name: Upload dry run report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cloud-nuke-dryrun
+          path: cloud-nuke-dryrun.json

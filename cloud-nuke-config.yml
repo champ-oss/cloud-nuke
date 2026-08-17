@@ -1,0 +1,32 @@
+CloudFormationStack:
+  exclude:
+    names_regex:
+      - ^cf-oidc-github$
+
+CloudWatchLogGroup:
+  exclude:
+    names_regex:
+      - ^/aws/ecs/containerinsights/.*/performance$
+      - ^env-vega-oss-vpc-flow-logs.*$
+      - .*/error$
+
+ECRRepository:
+  exclude:
+    names_regex:
+      - ^terraform-aws-$
+
+S3:
+  exclude:
+    names_regex:
+      - ^env-tfbackend.*$
+      - ^env-vega.*$
+
+Route53HostedZone:
+  exclude:
+    names_regex:
+      - ^oss\.champtest\.net\.$
+
+SSMParameter:
+  exclude:
+    tags:
+      git: terraform-aws-keycloak
