@@ -2,8 +2,7 @@ name: cloud-nuke-dryrun
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 0' # Runs every Sunday at midnight UTC
+
 permissions:
   id-token: write
   contents: read
