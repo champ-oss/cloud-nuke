@@ -41,7 +41,9 @@ jobs:
           cloud-nuke aws \
             --config cloud-nuke-config.yml \
             --region us-east-2 \
-            --exclude-resource-type iam-group,iam-instance-profile,iam-policy,iam-role,iam-service-linked-role,iam-user,eip,elbv2,guard-duty,cloudtrail,security-hub,access-analyzer,event-bridge,event-bridge-rule,config-recorders,config-rules,macie-member,ssm-parameter,nat-gateway,ec2-dhcp-option,network-acl,oidc-provider,ipam,ipam-byoasn,ipam-custom-allocation,ipam-pool,ipam-resource-discovery,ipam-scope,route53-hosted-zone,vpc,ec2-subnet,route-table,internet-gateway \
+            --exclude-resource-type iam-group,iam-instance-profile,iam-policy,iam-role,iam-service-linked-role,iam-user,eip,elbv2,guard-duty,cloudtrail,security-hub,access-analyzer,event-bridge,event-bridge-rule,config-recorders,config-rules,macie-member,ssm-parameter,nat-gateway,ec2-dhcp-option,network-acl,oidc-provider,ipam,ipam-byoasn,ipam-custom-allocation,ipam-pool,ipam-resource-discovery,ipam-scope,route53-hosted-zone,vpc,ec2-subnet,route-table,internet-gateway,network-interface,security-group \
+            --output-format json \
+            --output-file cloud-nuke.json \
             --force
       - name: Show Report Summary
         if: always()
