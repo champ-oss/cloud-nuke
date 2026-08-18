@@ -30,3 +30,8 @@ SSMParameter:
   exclude:
     tags:
       git: terraform-aws-keycloak
+
+VPC:
+  exclude:
+    tags:
+      cloud-nuke-excluded: "true"
